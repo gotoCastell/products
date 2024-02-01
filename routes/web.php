@@ -28,7 +28,7 @@ Route::group(['prefix' => 'products', 'as' => 'products'], function () {
     Route::post('/store', [App\Http\Controllers\Models\ProductController::class, 'store'])->name('.store');
     Route::get('/delete', [App\Http\Controllers\Models\ProductController::class, 'delete'])->name('.delete');
     Route::get('/details', [App\Http\Controllers\Models\ProductController::class, 'details'])->name('.details');
-    Route::get('/images/delete', [App\Http\Controllers\Models\ProductController::class, 'delete'])->name('.images.delete');
+    Route::get('/resource/delete', [App\Http\Controllers\Models\ProductController::class, 'deleteResource'])->name('.resource.delete');
 });
 
 

@@ -93,9 +93,13 @@
         $("#photos").on("change", function() {
             if ($("#photos")[0].files.length > 3) {
                 alert("You can select only 3 images");
-                // $("#photos")[0].files = []
                 $("#photos").val(null);
-                console.log($("#photos")[0]);
+            }
+        });
+        $("#videos").on("change", function() {
+            if ($("#videos")[0].files.length > 3) {
+                alert("You can select only 1 video");
+                $("#videos").val(null);
             }
             // else {
             //     $("#form").submit();

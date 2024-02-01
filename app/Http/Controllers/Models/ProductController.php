@@ -11,6 +11,7 @@ use App\Models\Catalogs\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Classes\Eloquent\Domain\Enum\Constants;
@@ -109,7 +110,28 @@ class ProductController extends Controller
                 }
             }
 
+            $videos = [];
+            if ($request->file('videos')) {
+                foreach ($request->file('videos') as $key => $file) {
+                    $file_name = time() . rand(1, 99) . '.' . $file->extension();
+                    $file->move(public_path('uploads'), $file_name);
+                    $videos[] = [
+                        Resource::NAME => $file_name,
+                        Resource::URL => '/uploads/',
+                        Resource::CAT_RESOURCE_TYPES_ID => Constants::VIDEO,
+                    ];
+                }
+            }
+
             foreach ($photos as $key => $file) {
+                $resource = Resource::create($file);
+                ResourceProduct::create([
+                    ResourceProduct::PRODUCTS_ID => $product->id,
+                    ResourceProduct::RESOURCES_ID => $resource->id,
+                ]);
+            }
+
+            foreach ($videos as $key => $file) {
                 $resource = Resource::create($file);
                 ResourceProduct::create([
                     ResourceProduct::PRODUCTS_ID => $product->id,
@@ -153,6 +175,43 @@ class ProductController extends Controller
             $status = Constants::INACTIVE;
             $message = 'Error when deleting product!';
             return redirect()->route('products')->with([
+                'status' => $status,
+                'message' => $message,
+            ]);
+        }
+    }
+
+
+    public function deleteResource(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $status = Constants::SUCCESS;
+            $message = 'Resource deleted!';
+            $resourceproduct = ResourceProduct::find($request->{Product::ID});
+
+            $product_id = $resourceproduct->{ResourceProduct::PRODUCTS_ID};
+
+            $resource = Resource::find($resourceproduct->{ResourceProduct::RESOURCES_ID});
+
+            $url = public_path($resource->{Resource::URL} . $resource->{Resource::NAME});
+
+            if (file_exists($url)) {
+                File::delete($url);
+            }
+
+            $resource->delete();
+            $resourceproduct->delete();
+            DB::commit();
+            return redirect()->route('products.details', ['id' => $product_id])->with([
+                'status' => $status,
+                'message' => $message,
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            $status = Constants::ERROR;
+            $message = 'Error when deleting resource!';
+            return redirect()->route('products.details', ['id' => $product_id])->with([
                 'status' => $status,
                 'message' => $message,
             ]);

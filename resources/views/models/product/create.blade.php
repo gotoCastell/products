@@ -16,16 +16,6 @@
                             </div>
                         </div>
 
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
                         <div class="row">
                             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data"
                                 id="form">
@@ -118,11 +108,11 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Select Files:</label>
-                                        <input type="file" name="video" id="video"
+                                        <input type="file" name="videos[]" id="videos"
                                             accept="video/mp4,video/x-m4v,video/*"
-                                            class="form-control @error('video') is-invalid @enderror">
+                                            class="form-control @error('videos') is-invalid @enderror">
                                         <span class="text-black">Select only video </span>
-                                        @error('video')
+                                        @error('videos')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>

@@ -48,7 +48,6 @@
                                 <tbody>
 
                                     @foreach ($products as $row)
-                                        {{ $row }}
                                         <tr>
                                             <td> {{ $row['name'] }} </td>
                                             <td> {{ $row['model_year'] }} </td>

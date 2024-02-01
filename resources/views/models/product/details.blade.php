@@ -15,6 +15,23 @@
                                 </a>
                             </div>
                         </div>
+
+
+                        @if (session('status') === 1)
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('status') === 0)
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
                         <div class="row">
                             <div class="col-sm-12 col-lg-6">
                                 <p class="fw-bold">NAME</p>
@@ -31,17 +48,31 @@
                             <div class="col-sm-12 col-lg-6">
                                 <div class="row">
                                     @foreach ($product->resource_product as $row)
-                                        <div class="col-4 d-flex flex-column">
-                                            <img class="img-thumbnail"
-                                                src="{{ $row['resource']['url'] . '' . $row['resource']['name'] }}"
-                                                alt="">
-                                            <a onclick="return confirm('Are you sure?')"
-                                                href="{{ route('products.images.delete', ['id' => $row['id']]) }}"
-                                                class="btn btn-link">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </a>
-                                            </a>
-                                        </div>
+                                        @if ($row['resource']['cat_resource_types_id'] === 2)
+                                            <div class="col-4 d-flex flex-column">
+                                                <img class="img-thumbnail"
+                                                    src="{{ $row['resource']['url'] . '' . $row['resource']['name'] }}"
+                                                    alt="">
+                                                <a onclick="return confirm('Are you sure?')"
+                                                    href="{{ route('products.resource.delete', ['id' => $row['id']]) }}"
+                                                    class="btn btn-link">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </a>
+                                                </a>
+                                            </div>
+                                        @endif
+                                        @if ($row['resource']['cat_resource_types_id'] === 1)
+                                            <div class="col-4 d-flex flex-column">
+                                                <video src="{{ $row['resource']['url'] . '' . $row['resource']['name'] }}"
+                                                    class="object-fit-contain" autoplay></video>
+                                                <a onclick="return confirm('Are you sure?')"
+                                                    href="{{ route('products.resource.delete', ['id' => $row['id']]) }}"
+                                                    class="btn btn-link">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </a>
+                                                </a>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
